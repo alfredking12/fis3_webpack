@@ -1,0 +1,1 @@
+module.exports = {"entry":"/Users/alfred/Workspace/fis3_webpack/home//client/page/index/index.jsx","output":{"filename":"index.js","path":"/Users/alfred/Workspace/fis3_webpack/home/output/cache/client/page/index"},"module":{"loaders":[{"test":/\.jsx$/,"loader":"jsx-loader?harmony"},{"test":/\.(png|jpg)$/,"loader":"url-loader?limit=8192"},{"test":/\.css$/,"loader":"style!css"}]}};
