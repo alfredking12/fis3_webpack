@@ -1,6 +1,6 @@
 {
   "name": "fis3_webpack",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "description": "fis3 compile using webpack, and support compile deps.",
   "main": "index.js",
   "scripts": {
@@ -24,6 +24,7 @@
     "deasync": "^0.1.7",
     "memory-fs": "^0.3.0",
     "proxy-fs": "0.0.10",
+    "underscore": "^1.8.3",
     "webpack": "^1.13.1"
   },
   "readme": "README.md"
