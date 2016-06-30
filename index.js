@@ -4,6 +4,8 @@ var deasync = require('deasync');
 var webpack = require('webpack');
 var MemoryFileSystem = require('memory-fs');
 var ProxyFileSystem = require('proxy-fs');
+var fs = require('fs');
+var _ = require('underscore');
 
 var fis3_webpack = {};
 
@@ -21,13 +23,36 @@ fis3_webpack.compile = function (file, content, options, callback) {
   //输出文件路径
   var output_file = [options.output.path, options.output.filename].join(path.sep);
   
-  var compiler = webpack(options);
+  var opt = {
+    hash: false,
+    timings: false,
+    chunks: false,
+    chunkModules: false,
+    modules: false,
+    children: true,
+    version: true,
+    cached: false,
+    cachedAssets: false,
+    reasons: false,
+    source: false,
+    errorDetails: false
+  };
+  console.log(JSON.stringify(opt));
   
+  opt = _.extend(opt, options);
+  console.log(JSON.stringify(opt));
+  
+  var compiler = webpack(opt);
+
   var mfs = new MemoryFileSystem({});
   mfs.mkdirpSync(path.dirname(options.entry));
   mfs.writeFileSync(options.entry, content);
   
   compiler.inputFileSystem = new ProxyFileSystem(function (filename) {
+    console.log('inputFileSystem===');
+    console.log('file.origin:' + path.resolve(file.origin));
+    console.log('filename:' + path.resolve(filename));
+    
     if (path.resolve(file.origin) === path.resolve(filename)) {
       return {
         fileSystem: mfs,
@@ -39,6 +64,10 @@ fis3_webpack.compile = function (file, content, options, callback) {
   }, compiler.inputFileSystem);
   
   var outfs = compiler.outputFileSystem = new ProxyFileSystem(function (filename) {
+    console.log('outputFileSystem===');
+    console.log('output_file:' + path.resolve(output_file));
+    console.log('filename:' + path.resolve(filename));
+    
     if (path.resolve(output_file) === path.resolve(filename)) {
       return {
         fileSystem: mfs,
@@ -46,7 +75,7 @@ fis3_webpack.compile = function (file, content, options, callback) {
       };
     }
   }, compiler.outputFileSystem);
-  
+
   compiler.run(function (err, stats) {
     if (err) {
       callback(err);
@@ -57,7 +86,7 @@ fis3_webpack.compile = function (file, content, options, callback) {
     if (err || errors.length > 0) {
       callback(err || errors.join('\n'));
     } else {
-      callback(null, String(outfs.readFileSync(output_file)));
+      callback(null, String(fs.readFileSync(output_file)));
     }
   });
 };
