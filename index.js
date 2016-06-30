@@ -37,10 +37,8 @@ fis3_webpack.compile = function (file, content, options, callback) {
     source: false,
     errorDetails: false
   };
-  console.log(JSON.stringify(opt));
   
   opt = _.extend(opt, options);
-  console.log(JSON.stringify(opt));
   
   var compiler = webpack(opt);
 
@@ -49,9 +47,6 @@ fis3_webpack.compile = function (file, content, options, callback) {
   mfs.writeFileSync(options.entry, content);
   
   compiler.inputFileSystem = new ProxyFileSystem(function (filename) {
-    console.log('inputFileSystem===');
-    console.log('file.origin:' + path.resolve(file.origin));
-    console.log('filename:' + path.resolve(filename));
     
     if (path.resolve(file.origin) === path.resolve(filename)) {
       return {
@@ -61,19 +56,16 @@ fis3_webpack.compile = function (file, content, options, callback) {
     } else {
       file.cache.addDeps(filename); // 添加编译依赖
     }
+    
   }, compiler.inputFileSystem);
   
   var outfs = compiler.outputFileSystem = new ProxyFileSystem(function (filename) {
-    console.log('outputFileSystem===');
-    console.log('output_file:' + path.resolve(output_file));
-    console.log('filename:' + path.resolve(filename));
     
-    if (path.resolve(output_file) === path.resolve(filename)) {
-      return {
+     return {
         fileSystem: mfs,
-        path: output_file
+        path: filename
       };
-    }
+      
   }, compiler.outputFileSystem);
 
   compiler.run(function (err, stats) {
@@ -86,7 +78,7 @@ fis3_webpack.compile = function (file, content, options, callback) {
     if (err || errors.length > 0) {
       callback(err || errors.join('\n'));
     } else {
-      callback(null, String(fs.readFileSync(output_file)));
+      callback(null, String(mfs.readFileSync(output_file)));
     }
   });
 };
@@ -108,7 +100,7 @@ fis3_webpack.compileSync = function(file, content, options) {
     compiled = true;
     compiled_content = data;
     if (err) {
-      fis.log.error('fis3_webpack failed: ' + err);
+      fis.log.error('fis3_webpack failed: ', err);
     }
   });
   
