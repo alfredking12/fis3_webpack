@@ -4,7 +4,7 @@
   "description": "fis3 compile using webpack, and support compile deps.",
   "main": "index.js",
   "scripts": {
-    "test": "node test.js"
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
