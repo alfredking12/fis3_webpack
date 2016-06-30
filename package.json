@@ -1,6 +1,6 @@
 {
   "name": "fis3_webpack",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "fis3 compile using webpack, and support compile deps.",
   "main": "index.js",
   "scripts": {
